@@ -13,9 +13,7 @@ fn contains_bags(bags: &Bags, name: &str, goal: &str) -> bool {
         .unwrap_or(false)
 }
 
-fn bags_from_input<'a>(
-    input: &'a String,
-) -> Result<Bags, Box<dyn std::error::Error>> {
+fn bags_from_input<'a>(input: &'a String) -> Result<Bags, Box<dyn std::error::Error>> {
     let mut bags: HashMap<&str, HashMap<&str, usize>> = HashMap::new();
     let bag_outside_regex = Regex::new(r"^(\w+ \w+)").unwrap();
     let bag_inside_regex = Regex::new(r"(\d) (\w+ \w+)").unwrap();
@@ -49,10 +47,12 @@ pub fn part_1(input: String) -> Result<String, Box<dyn std::error::Error>> {
 }
 
 fn count_bags(bags: &Bags, start: &str) -> usize {
-    bags
-        .get(start)
+    bags.get(start)
         .map(|contained| {
-            contained.iter().map(|(bag, count)| count + count * count_bags(bags, bag)).sum()
+            contained
+                .iter()
+                .map(|(bag, count)| count + count * count_bags(bags, bag))
+                .sum()
         })
         .unwrap_or(1)
 }
